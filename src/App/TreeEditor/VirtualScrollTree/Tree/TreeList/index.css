@@ -1,0 +1,10 @@
+.Node {
+  padding: 0 5px;
+  line-height: 30px;
+  background: #dddddd;
+}
+
+.NodeBox {
+  box-sizing: border-box;
+  padding: 5px;
+}

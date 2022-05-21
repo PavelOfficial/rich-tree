@@ -1,5 +1,2 @@
 **/*.js
-**/*.jsx
-node_modules/
-.eslintrc.js
-.prettierrc.js
+src/services/**/api.d.ts
