@@ -91,6 +91,7 @@ module.exports = {
     "import/no-unused-modules": "off",
     "import/no-extraneous-dependencies": "off",
     "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
 
   },
 };
