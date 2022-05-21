@@ -1,7 +1,14 @@
 import React from 'react';
 
+import { TreeEditor } from './TreeEditor';
+import './index.css';
+
 function App() {
-  return null;
+  return (
+    <div className="App">
+      <TreeEditor />
+    </div>
+  );
 }
 
 export default App;

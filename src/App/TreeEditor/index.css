@@ -1,0 +1,17 @@
+
+.TreeEditor {
+    width: 800px;
+    padding: 10px;
+}
+
+.TreeEditor__viewport {
+    display: flex;
+    flex-direction: row;
+}
+
+.TreeEditor__controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+}
+
