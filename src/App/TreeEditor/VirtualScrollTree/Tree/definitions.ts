@@ -1,2 +1,2 @@
-export const itemHeight = 40
-export const nestingPad = 40
+export const itemHeight = 40;
+export const nestingPad = 40;

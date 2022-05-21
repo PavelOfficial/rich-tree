@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 
-import './index.css'
+import './index.css';
 
-import { VirtualScrollTree } from './VirtualScrollTree'
+import { VirtualScrollTree } from './VirtualScrollTree';
 
 export const TreeEditor = () => {
   return (
@@ -16,5 +16,5 @@ export const TreeEditor = () => {
         <button type="button">Rempove</button>
       </div>
     </div>
-  )
-}
+  );
+};

@@ -1,19 +1,19 @@
-import { EntityLabelNode } from './EntityLabelNode'
+import { EntityLabelNode } from './EntityLabelNode';
 
 export const emptyEntityLabelNode: EntityLabelNode = {
   get id() {
-    return -1
+    return -1;
   },
   get label() {
-    return ''
+    return '';
   },
   get parent() {
-    return emptyEntityLabelNode
+    return emptyEntityLabelNode;
   },
   children: [],
   setParent() {},
   addChild() {},
   get level() {
-    return 0
+    return 0;
   },
-}
+};
