@@ -2,11 +2,13 @@ import React from 'react';
 
 import './index.css'
 
+import { VirtualScrollTree } from './VirtualScrollTree';
+
 export const TreeEditor = () => {
   return (
     <div className="TreeEditor">
       <div className="TreeEditor__viewport">
-        <div />
+        <VirtualScrollTree />
         <div />
       </div>
       <div className="TreeEditor__controls">
