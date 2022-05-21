@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './index';
+import './index.css';
 
 import { Tree } from './Tree';
 
