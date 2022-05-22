@@ -2,6 +2,16 @@
   padding: 0 5px;
   line-height: 30px;
   background: #dddddd;
+  display: block;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  width: 100%;
+  text-align: left;
+}
+
+.Node_selected {
+  background: #9999ff;
 }
 
 .NodeBox {

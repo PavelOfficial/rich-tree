@@ -1,4 +1,4 @@
-import { observable, action, ObservableMap } from 'mobx';
+import { observable, action, ObservableMap, computed } from 'mobx';
 import invariant from 'invariant';
 
 import { EntityLabelNode } from '../EntityLabel/EntityLabelNode';
@@ -16,6 +16,9 @@ const myDecorator = (...args: any) => {
 
 export class EntityLabelStore {
   @observable
+  _selected: EntityLabelNode;
+
+  @observable
   _sequence: number[];
 
   @observable
@@ -32,6 +35,7 @@ export class EntityLabelStore {
       children: [],
     });
     this._map = this.createMap();
+    this._selected = emptyEntityLabelNode;
 
     this.fetch();
   }
@@ -45,6 +49,7 @@ export class EntityLabelStore {
   @myDecorator
   initMap(entityLabelPage: EntityLabelPage) {
     this._map = this.createMap();
+    this._selected = emptyEntityLabelNode;
 
     entityLabelPage.entityLongIds.forEach((id: number, index: number) => {
       const label = entityLabelPage.labels[index];
@@ -91,11 +96,25 @@ export class EntityLabelStore {
     }
   }
 
-  getSequence() {
+  @action
+  setSelected(id: number) {
+    const selected = this._map.get(id);
+
+    this._selected = selected;
+  }
+
+  @computed
+  get sequence() {
     return this._sequence;
   }
 
-  getMap() {
+  @computed
+  get map() {
     return this._map;
+  }
+
+  @computed
+  get selected() {
+    return this._selected;
   }
 }

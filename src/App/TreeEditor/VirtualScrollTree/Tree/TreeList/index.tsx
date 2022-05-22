@@ -1,40 +1,16 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { ObservableMap } from 'mobx';
 
 import { Range } from '../types';
 import { EntityLabelNode } from '../mobx/EntityLabel/EntityLabelNode';
-import { itemHeight, nestingPad } from '../definitions';
 
 import './index.css';
+import { Item } from './Item';
 
 type Props = {
   sequence: number[];
   map: ObservableMap<number, EntityLabelNode>;
   range: Range;
-};
-
-const defaultStyle = {
-  height: itemHeight,
-};
-
-type ItemProps = {
-  id: number;
-  node: EntityLabelNode;
-};
-
-const Item = (props: ItemProps) => {
-  const style = useMemo(() => {
-    return {
-      ...defaultStyle,
-      marginLeft: nestingPad * props.node.level,
-    };
-  }, [props.node]);
-
-  return (
-    <div className="NodeBox" style={style} key={props.id}>
-      <div className="Node">{props.node.label}</div>
-    </div>
-  );
 };
 
 const renderList = (props: Props) => {
