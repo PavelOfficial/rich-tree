@@ -1,5 +1,7 @@
 import React, { LegacyRef } from 'react';
+
 import { VirtualScrollContainerStyle } from '../../../lib/VirtualScroll/types';
+import { DropContainer } from './DropContainer';
 
 type Props = {
   children: React.ReactElement | (() => JSX.Element);
@@ -10,7 +12,7 @@ type Props = {
 const ScrollContainer = ({ children, forwardRef, style }: Props) => {
   return (
     <div className="VirtualScrollTree" ref={forwardRef}>
-      <div style={style}>{children}</div>
+      <DropContainer style={style}>{children}</DropContainer>
     </div>
   );
 };

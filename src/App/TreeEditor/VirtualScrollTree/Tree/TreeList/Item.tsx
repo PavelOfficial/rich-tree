@@ -1,8 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
 import { inject, observer } from 'mobx-react';
+import { useDrag } from 'react-dnd';
 import classnames from 'classnames';
 
-import { itemHeight, nestingPad } from '../definitions';
+import { itemHeight, nestingPad, nodeItemType } from '../definitions';
 
 import { EntityLabelStore } from '../../../mobx/EntityLabelStore';
 import { EntityLabelNode } from '../../../mobx/EntityLabel/EntityLabelNode';
@@ -21,6 +22,14 @@ type ItemProps = {
 
 const Item = inject('entityLabelStore')(
   observer((props: ItemProps) => {
+    const [{ isDragging }, drag] = useDrag<{ id: number }, { name: string }, { isDragging: boolean }>(() => ({
+      type: nodeItemType,
+      item: { id: props.id },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+    }));
+
     const style = useMemo(() => {
       return {
         ...defaultStyle,
@@ -32,11 +41,16 @@ const Item = inject('entityLabelStore')(
       props.entityLabelStore.setSelected(props.id);
     }, [props.id]);
 
+    if (isDragging) {
+      return <div className="DragStart" />;
+    }
+
     return (
       <div className="NodeBox" style={style} key={props.id}>
         <button
           type="button"
           onClick={handleClick}
+          ref={drag}
           className={classnames({
             Node: true,
             Node_selected: props.entityLabelStore.selected.id === props.id,

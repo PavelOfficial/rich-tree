@@ -10,6 +10,11 @@
   text-align: left;
 }
 
+.DragStart {
+  height: 0;
+  outline: 1px solid #ff8888;
+}
+
 .Node_selected {
   background: #9999ff;
 }
