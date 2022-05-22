@@ -1,4 +1,5 @@
 .Info {
+  box-sizing: border-box;
   background: #ffe7d8;
   flex-grow: 1;
   flex-basis: 50%;
