@@ -125,6 +125,8 @@ export class EntityLabelStore {
     branchMemberIds.forEach((id: number) => {
       this._map.delete(id);
     });
+
+    this._selected = emptyEntityLabelNode;
   }
 
   @action('entity label apply')
