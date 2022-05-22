@@ -19,9 +19,6 @@ module.exports = {
         'module-resolver',
         {
           root: ['./'],
-          alias: {
-            '@': './src',
-          },
         },
       ],
     ],
@@ -30,31 +27,8 @@ module.exports = {
     return {
       ...devServerConfig,
       port: 3000,
-      proxy: {
-        // 代理，按需修改
-        // '/api': {
-        //   target: 'http://apitest.t.iwubida.com',
-        //   changeOrigin: true,
-        //   ws: false,
-        //   secure: false,
-        // },
-      },
+      proxy: {},
     }
   },
-  plugins: [
-    {
-      plugin: { fastRefreshCracoPlugin },
-    },
-    {
-      plugin: CracoLessPlugin,
-      options: {
-        lessLoaderOptions: {
-          lessOptions: {
-            modifyVars: {},
-            javascriptEnabled: true,
-          },
-        },
-      },
-    },
-  ],
+  plugins: [],
 }

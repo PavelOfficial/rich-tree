@@ -26,6 +26,9 @@ export class EntityLabelStore {
 
   _rootNode: EntityLabelNode;
 
+  @observable
+  _pending: boolean;
+
   constructor() {
     this._sequence = [];
     this._rootNode = new EntityLabel({
@@ -36,6 +39,7 @@ export class EntityLabelStore {
     });
     this._map = this.createMap();
     this._selected = emptyEntityLabelNode;
+    this._pending = false;
 
     this.fetch();
   }
@@ -49,7 +53,6 @@ export class EntityLabelStore {
   @myDecorator
   initMap(entityLabelPage: EntityLabelPage) {
     this._map = this.createMap();
-    this._selected = emptyEntityLabelNode;
 
     entityLabelPage.entityLongIds.forEach((id: number, index: number) => {
       const label = entityLabelPage.labels[index];
@@ -76,12 +79,20 @@ export class EntityLabelStore {
 
   @action('set data')
   setData(entityLabelPage: EntityLabelPage) {
+    this._selected = emptyEntityLabelNode;
     this._sequence = entityLabelPage.entityLongIds;
     this.initMap(entityLabelPage);
   }
 
+  @action
+  setPending(pending: boolean) {
+    this._pending = pending;
+  }
+
   @action('load entity labels')
   async fetch() {
+    this.setPending(true);
+
     try {
       const response = await fetch(RESOURCE, { method: 'GET' });
 
@@ -94,6 +105,75 @@ export class EntityLabelStore {
     } catch (error) {
       console.log(error);
     }
+
+    this.setPending(false);
+  }
+
+  @action('entity label remove selected')
+  removeSelected() {
+    if (this._selected === emptyEntityLabelNode) {
+      return;
+    }
+
+    this._selected.parent.removeChild(this._selected);
+
+    const branchMemberIds = this._selected.getBranchMembers().map((item) => {
+      return item.id;
+    });
+
+    const removeIds = new Set(branchMemberIds);
+    this._sequence = this._sequence.filter((id) => {
+      return !removeIds.has(id);
+    });
+
+    branchMemberIds.forEach((id: number) => {
+      this._map.delete(id);
+    });
+  }
+
+  @action('entity label apply')
+  apply() {
+    const result = {};
+
+    let path = [this._map.get(-1)];
+    const updatePath = (item: EntityLabelNode) => {
+      const parentIndex = path.indexOf(item.parent);
+      if (parentIndex !== -1) {
+        path = path.slice(0, parentIndex + 1);
+      } else {
+        path.push(item.parent);
+      }
+    };
+
+    const applyNode = (node: EntityLabelNode) => {
+      const data = node.getData();
+      const branch = path.reduce((branch, pathItem) => {
+        if (pathItem.id === ROOT_ID) {
+          return branch;
+        }
+
+        invariant(branch[pathItem.id], 'Invalid tree structure');
+
+        if (!branch[pathItem.id].children) {
+          branch[pathItem.id].children = {};
+        }
+
+        const nextBranch = branch[pathItem.id].children;
+
+        return nextBranch;
+      }, result);
+
+      branch[data.id] = data;
+    };
+
+    this._sequence.forEach((id, index) => {
+      const item = this._map.get(id);
+
+      updatePath(item);
+      applyNode(item);
+    });
+
+    console.log(result);
   }
 
   @action
@@ -116,5 +196,10 @@ export class EntityLabelStore {
   @computed
   get selected() {
     return this._selected;
+  }
+
+  @computed
+  get pending() {
+    return this._pending;
   }
 }

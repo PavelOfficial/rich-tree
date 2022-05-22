@@ -1,9 +1,10 @@
 import React from 'react';
 
-import './index.css';
-
 import { VirtualScrollTree } from './VirtualScrollTree';
 import { Info } from './Info';
+import { Controls } from './Controls';
+
+import './index.css';
 
 export const TreeEditor = () => {
   return (
@@ -12,10 +13,7 @@ export const TreeEditor = () => {
         <VirtualScrollTree />
         <Info />
       </div>
-      <div className="TreeEditor__controls">
-        <button type="button">Refresh</button>
-        <button type="button">Remove</button>
-      </div>
+      <Controls />
     </div>
   );
 };

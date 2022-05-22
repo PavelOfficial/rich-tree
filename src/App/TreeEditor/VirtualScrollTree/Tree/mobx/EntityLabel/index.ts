@@ -56,11 +56,39 @@ export class EntityLabel implements EntityLabelNode {
     return this.parent.level + 1;
   }
 
+  removeChild(child: EntityLabelNode) {
+    const index = this._children.indexOf(child);
+
+    if (index !== -1) {
+      this._children.splice(index, 1);
+    }
+  }
+
+  getBranchMembers() {
+    const allSubBranchMembers = this.children.reduce((result, child) => {
+      result.push(...child.getBranchMembers());
+
+      return result;
+    }, []);
+
+    const result = [this, ...allSubBranchMembers];
+
+    return result;
+  }
+
   setParent(parent: EntityLabelNode) {
     this._parent = parent;
   }
 
   addChild(child: EntityLabelNode) {
     this._children.push(child);
+  }
+
+  getData() {
+    return {
+      id: this.id,
+      label: this.label,
+      parentId: this.parent.id,
+    };
   }
 }
