@@ -3,21 +3,24 @@ import { inject, observer } from 'mobx-react';
 
 import { EntityLabelStore } from '../../mobx/EntityLabelStore';
 
-import { Range } from './types';
 import { TreeList } from './TreeList';
+import { VirtualScrollStore } from '../../../../lib/VirtualScroll/mobx/VirtualScrollStore';
 
 type Props = {
   entityLabelStore: EntityLabelStore;
-  range: Range;
+  virtualScrollStore: VirtualScrollStore;
 };
 
-const Tree = inject('entityLabelStore')(
-  observer(({ entityLabelStore, range }: Props) => {
+const Tree = inject(
+  'entityLabelStore',
+  'virtualScrollStore'
+)(
+  observer(({ entityLabelStore, virtualScrollStore }: Props) => {
     return (
       <TreeList //
         sequence={entityLabelStore._sequence}
         map={entityLabelStore._map}
-        range={range}
+        range={virtualScrollStore.range}
       />
     );
   })
@@ -25,7 +28,7 @@ const Tree = inject('entityLabelStore')(
 
 type ExternalProps = {
   entityLabelStore?: EntityLabelStore;
-  range: Range;
+  virtualScrollStore?: VirtualScrollStore;
 };
 
 const ExternalTree = Tree as React.FC<ExternalProps>;
