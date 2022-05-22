@@ -1,0 +1,20 @@
+.DropAcceptor {
+  box-sizing: border-box;
+  padding: 5px;
+  height: 40px;
+  background: #fadf7a;
+}
+
+.DropAcceptor__slot {
+  box-sizing: border-box;
+  height: 40px;
+  margin-top: -40px;
+  padding: 10px;
+}
+
+.DropAcceptor__slot_active::before {
+  content: '';
+  display: block;
+  border: 2px solid #1c6bf5;
+  height: 20px;
+}

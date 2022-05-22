@@ -15,4 +15,5 @@ export interface EntityLabelNode {
   getBranchMembers(): EntityLabelNode[];
   removeChild(node: EntityLabelNode): void;
   getData(): EntityLabelData;
+  get path(): number[];
 }

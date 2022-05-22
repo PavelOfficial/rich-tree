@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { inject, observer } from 'mobx-react';
 import { useDrag } from 'react-dnd';
 import classnames from 'classnames';
@@ -31,9 +31,6 @@ const Item = inject(
     const [{ isDragging }, drag] = useDrag<{ id: number }, { name: string }, { isDragging: boolean }>(() => ({
       type: nodeItemType,
       item: { id: props.id, index: props.index },
-      start: () => {
-        props.dragAndDropStore.startDragging();
-      },
       end: () => {
         props.dragAndDropStore.endDragging();
       },
@@ -41,6 +38,12 @@ const Item = inject(
         isDragging: monitor.isDragging(),
       }),
     }));
+
+    useEffect(() => {
+      if (isDragging) {
+        props.dragAndDropStore.startDragging(props.index);
+      }
+    }, [isDragging]);
 
     const style = useMemo(() => {
       return {

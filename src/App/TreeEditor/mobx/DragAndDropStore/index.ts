@@ -13,7 +13,7 @@ export class DragAndDropStore {
   entityLabelStore: EntityLabelStore;
 
   @observable
-  mouseIndex: number;
+  _mouseIndex: number;
 
   @observable
   dragging: boolean;
@@ -21,14 +21,23 @@ export class DragAndDropStore {
   @observable
   dropIntention: NodeLocation;
 
+  @observable
+  startDraggingIndex: number;
+
   constructor(entityLabelStore: EntityLabelStore) {
     this.entityLabelStore = entityLabelStore;
     this.dropIntention = emptyDropIntention;
+    this.startDraggingIndex = -1;
   }
 
   @computed
   get dropAccessorIndex() {
-    return this.dragging ? this.mouseIndex : -1;
+    return this.dragging ? this._mouseIndex + this.afterStartIndexBoost : -1;
+  }
+
+  @computed
+  get afterStartIndexBoost() {
+    return this._mouseIndex > this.startDraggingIndex ? 1 : 0;
   }
 
   @action
@@ -38,11 +47,12 @@ export class DragAndDropStore {
 
   @action
   setMouseIndex(index: number) {
-    this.mouseIndex = index;
+    this._mouseIndex = index;
   }
 
   @action
-  startDragging() {
+  startDragging(index: number) {
+    this.startDraggingIndex = index;
     this.dragging = true;
   }
 
@@ -58,5 +68,10 @@ export class DragAndDropStore {
     }
 
     this.dragging = false;
+  }
+
+  @computed
+  get mouseIndex() {
+    return this._mouseIndex;
   }
 }

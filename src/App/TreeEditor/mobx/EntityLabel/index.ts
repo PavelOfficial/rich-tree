@@ -56,6 +56,12 @@ export class EntityLabel implements EntityLabelNode {
     return this.parent.level + 1;
   }
 
+  get path() {
+    const parentPath = this.parent.path;
+
+    return [...parentPath, this.id];
+  }
+
   removeChild(child: EntityLabelNode) {
     const index = this._children.indexOf(child);
 

@@ -27,4 +27,7 @@ export const emptyEntityLabelNode: EntityLabelNode = {
       parentId: this.parent.id,
     };
   },
+  get path() {
+    return [];
+  },
 };
