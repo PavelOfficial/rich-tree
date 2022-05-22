@@ -7,6 +7,7 @@ import { EntityLabel } from '../EntityLabel';
 
 import type { EntityLabelPage, EntityLabelResponse } from './types';
 import { ROOT_ID } from './definitions';
+import { NodeLocation } from '../DragAndDropStore/types';
 
 const RESOURCE = 'https://gist.githubusercontent.com/avydashenko/e1702c1ef26cddd006da989aa47d4f62/raw/067f7b75946baf7faf5b8afcd04c66ecf0b47486/view.json';
 
@@ -44,6 +45,11 @@ export class EntityLabelStore {
     const map = new Map([[this._rootNode.id, this._rootNode]]);
 
     return observable.map<number, EntityLabelNode>(map);
+  }
+
+  moveNode(sourceIndex: number, nodePosition: NodeLocation) {
+    const sourceId = this._sequence[sourceIndex];
+    const sourceNode = this._map.get(sourceId);
   }
 
   @action

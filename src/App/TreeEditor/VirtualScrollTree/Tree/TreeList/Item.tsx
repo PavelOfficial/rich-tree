@@ -7,6 +7,7 @@ import { itemHeight, nestingPad, nodeItemType } from '../definitions';
 
 import { EntityLabelStore } from '../../../mobx/EntityLabelStore';
 import { EntityLabelNode } from '../../../mobx/EntityLabel/EntityLabelNode';
+import { DragAndDropStore } from '../../../mobx/DragAndDropStore';
 
 import './index.css';
 
@@ -16,15 +17,26 @@ const defaultStyle = {
 
 type ItemProps = {
   id: number;
+  index: number;
   node: EntityLabelNode;
   entityLabelStore: EntityLabelStore;
+  dragAndDropStore: DragAndDropStore;
 };
 
-const Item = inject('entityLabelStore')(
+const Item = inject(
+  'entityLabelStore',
+  'dragAndDropStore'
+)(
   observer((props: ItemProps) => {
     const [{ isDragging }, drag] = useDrag<{ id: number }, { name: string }, { isDragging: boolean }>(() => ({
       type: nodeItemType,
-      item: { id: props.id },
+      item: { id: props.id, index: props.index },
+      start: () => {
+        props.dragAndDropStore.startDragging();
+      },
+      end: () => {
+        props.dragAndDropStore.endDragging();
+      },
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
@@ -66,7 +78,9 @@ const Item = inject('entityLabelStore')(
 type ExternalItemProps = {
   id: number;
   node: EntityLabelNode;
+  index: number;
   entityLabelStore?: EntityLabelStore;
+  dragAndDropStore?: DragAndDropStore;
 };
 
 const ExternalItem = Item as React.FC<ExternalItemProps>;

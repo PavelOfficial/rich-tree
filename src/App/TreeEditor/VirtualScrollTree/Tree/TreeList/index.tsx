@@ -16,8 +16,8 @@ type Props = {
 const renderList = (props: Props) => {
   const virtualSequence = props.sequence.slice(props.range.from, props.range.to);
 
-  return virtualSequence.map((id: number) => {
-    return <Item key={id} id={id} node={props.map.get(id) as EntityLabelNode} />;
+  return virtualSequence.map((id: number, index) => {
+    return <Item key={id} id={id} index={props.range.from + index} node={props.map.get(id) as EntityLabelNode} />;
   });
 };
 
