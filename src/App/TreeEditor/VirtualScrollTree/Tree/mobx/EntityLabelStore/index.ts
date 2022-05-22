@@ -10,10 +10,6 @@ import { ROOT_ID } from './definitions';
 
 const RESOURCE = 'https://gist.githubusercontent.com/avydashenko/e1702c1ef26cddd006da989aa47d4f62/raw/067f7b75946baf7faf5b8afcd04c66ecf0b47486/view.json';
 
-const myDecorator = (...args: any) => {
-  console.log(args);
-};
-
 export class EntityLabelStore {
   @observable
   _selected: EntityLabelNode;
@@ -50,7 +46,7 @@ export class EntityLabelStore {
     return observable.map<number, EntityLabelNode>(map);
   }
 
-  @myDecorator
+  @action
   initMap(entityLabelPage: EntityLabelPage) {
     this._map = this.createMap();
 
