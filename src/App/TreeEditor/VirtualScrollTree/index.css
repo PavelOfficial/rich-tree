@@ -1,5 +1,8 @@
 .VirtualScrollTree {
-  background: #eeeeee;
+  box-sizing: border-box;
+  background: #494949;
   flex-grow: 1;
   flex-basis: 50%;
+  height: 600px;
+  overflow-y: scroll;
 }

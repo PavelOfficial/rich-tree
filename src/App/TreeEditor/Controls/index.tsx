@@ -26,13 +26,13 @@ const Controls = inject('entityLabelStore')(
 
     return (
       <div className="Controls">
-        <button type="button" onClick={handleApply}>
+        <button className="Controls__button" type="button" onClick={handleApply}>
           Apply
         </button>
-        <button type="button" disabled={props.entityLabelStore.pending} onClick={handleRefresh}>
+        <button className="Controls__button" type="button" disabled={props.entityLabelStore.pending} onClick={handleRefresh}>
           Refresh
         </button>
-        <button type="button" disabled={props.entityLabelStore.selected === emptyEntityLabelNode} onClick={handleRemove}>
+        <button className="Controls__button" type="button" disabled={props.entityLabelStore.selected === emptyEntityLabelNode} onClick={handleRemove}>
           Remove
         </button>
       </div>

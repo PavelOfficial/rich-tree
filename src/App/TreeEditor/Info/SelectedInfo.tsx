@@ -20,9 +20,15 @@ const SelectedInfo = inject('entityLabelStore')(
 
     return (
       <>
-        <div>id: {selected.id}</div>
-        <div>label: {selected.label}</div>
-        <div>parentId: {selected.parent.id}</div>
+        <div>
+          <strong>id:</strong> {selected.id}
+        </div>
+        <div>
+          <strong>label:</strong> {selected.label}
+        </div>
+        <div>
+          <strong>parentId:</strong> {selected.parent.id}
+        </div>
       </>
     );
   })
