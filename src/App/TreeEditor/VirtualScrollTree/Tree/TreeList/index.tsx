@@ -2,10 +2,10 @@ import React from 'react';
 import { ObservableMap } from 'mobx';
 
 import { Range } from '../types';
-import { EntityLabelNode } from '../mobx/EntityLabel/EntityLabelNode';
+import { Item } from './Item';
+import { EntityLabelNode } from '../../../mobx/EntityLabel/EntityLabelNode';
 
 import './index.css';
-import { Item } from './Item';
 
 type Props = {
   sequence: number[];

@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { EntityLabelStore } from '../VirtualScrollTree/Tree/mobx/EntityLabelStore';
+import { EntityLabelStore } from '../mobx/EntityLabelStore';
+import { ROOT_ID } from '../mobx/EntityLabelStore/definitions';
 
 import './index.css';
-import { emptyEntityLabelNode } from '../VirtualScrollTree/Tree/mobx/EntityLabel/emptyEntityLabelNode';
 
 type Props = {
   entityLabelStore: EntityLabelStore;
@@ -32,7 +32,7 @@ const Controls = inject('entityLabelStore')(
         <button className="Controls__button" type="button" disabled={props.entityLabelStore.pending} onClick={handleRefresh}>
           Refresh
         </button>
-        <button className="Controls__button" type="button" disabled={props.entityLabelStore.selected === emptyEntityLabelNode} onClick={handleRemove}>
+        <button className="Controls__button" type="button" disabled={props.entityLabelStore.selected.id === ROOT_ID} onClick={handleRemove}>
           Remove
         </button>
       </div>

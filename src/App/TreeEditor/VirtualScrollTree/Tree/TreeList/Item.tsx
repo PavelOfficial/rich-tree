@@ -2,12 +2,12 @@ import React, { useCallback, useMemo } from 'react';
 import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
 
-import { EntityLabelNode } from '../mobx/EntityLabel/EntityLabelNode';
 import { itemHeight, nestingPad } from '../definitions';
 
-import './index.css';
+import { EntityLabelStore } from '../../../mobx/EntityLabelStore';
+import { EntityLabelNode } from '../../../mobx/EntityLabel/EntityLabelNode';
 
-import { EntityLabelStore } from '../mobx/EntityLabelStore';
+import './index.css';
 
 const defaultStyle = {
   height: itemHeight,

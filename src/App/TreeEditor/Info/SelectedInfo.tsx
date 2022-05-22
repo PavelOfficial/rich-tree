@@ -1,10 +1,10 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
+import { ROOT_ID } from '../mobx/EntityLabelStore/definitions';
+import { EntityLabelStore } from '../mobx/EntityLabelStore';
+
 import './index.css';
-import { EntityLabelStore } from '../VirtualScrollTree/Tree/mobx/EntityLabelStore';
-import { emptyEntityLabelNode } from '../VirtualScrollTree/Tree/mobx/EntityLabel/emptyEntityLabelNode';
-import { ROOT_ID } from '../VirtualScrollTree/Tree/mobx/EntityLabelStore/definitions';
 
 type Props = {
   entityLabelStore: EntityLabelStore;

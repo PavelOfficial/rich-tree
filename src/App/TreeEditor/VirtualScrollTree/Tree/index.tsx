@@ -1,8 +1,9 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
+import { EntityLabelStore } from '../../mobx/EntityLabelStore';
+
 import { Range } from './types';
-import { EntityLabelStore } from './mobx/EntityLabelStore';
 import { TreeList } from './TreeList';
 
 type Props = {
