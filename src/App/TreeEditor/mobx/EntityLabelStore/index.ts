@@ -50,9 +50,64 @@ export class EntityLabelStore {
     return observable.map<number, EntityLabelNode>(map);
   }
 
-  moveNode(sourceIndex: number, nodePosition: NodeLocation) {
-    const sourceId = this._sequence[sourceIndex];
+  moveSequence(sourceIndex: number, childrenEndIndex: number, targetPosition: NodeLocation) {
+    const sequence = this._sequence;
+    const removementLength = childrenEndIndex - sourceIndex;
+    const branch = sequence.splice(sourceIndex, removementLength);
+
+    let targetIndex = targetPosition.index;
+
+    if (sourceIndex < targetPosition.index) {
+      targetIndex = targetPosition.index - removementLength;
+    }
+
+    sequence.splice(targetIndex, 0, ...branch);
+  }
+
+  updateNestingPointers(sourceIndex: number, targetPosition: NodeLocation) {
+    const sequence = this._sequence;
+    const sourceId = sequence[sourceIndex];
     const sourceNode = this._map.get(sourceId);
+
+    const targetParent = this._map.get(targetPosition.parentId);
+
+    const upperId = sequence[targetPosition.index - 1] ?? ROOT_ID;
+    const upperNode = this._map.get(upperId);
+    const upperNodePath = upperNode.path;
+    const upperNodeParentIndex = upperNodePath.indexOf(targetPosition.parentId);
+    const lastItemId = sequence[sequence.length - 1];
+    const closestUpperSiblingId = upperNodeParentIndex === -1 ? lastItemId : upperNodePath[upperNodeParentIndex + 1] ?? lastItemId;
+    const closestUpperSibling = this._map.get(closestUpperSiblingId);
+    const closestUpperSiblingIndex = targetParent.children.indexOf(closestUpperSibling);
+    const insertIndex = closestUpperSiblingIndex + 1;
+
+    sourceNode.parent.removeChild(sourceNode);
+
+    sourceNode.setParent(targetParent);
+
+    targetParent.addChild(sourceNode, insertIndex);
+  }
+
+  moveNode(sourceIndex: number, targetPosition: NodeLocation) {
+    const sequence = this._sequence;
+    const sourceId = sequence[sourceIndex];
+    const sourceNode = this._map.get(sourceId);
+    const sourceParentPath = sourceNode.parent.path;
+    const sourceParentPathSet = new Set(sourceParentPath);
+
+    const length = sequence.length;
+    let childrenEndIndex = sourceIndex + 1;
+    for (let i = childrenEndIndex; i < length; i++) {
+      const currentItem = this._map.get(sequence[i]);
+      if (sourceParentPathSet.has(currentItem.parent.id) || i === length - 1) {
+        childrenEndIndex = i;
+
+        break;
+      }
+    }
+
+    this.updateNestingPointers(sourceIndex, targetPosition);
+    this.moveSequence(sourceIndex, childrenEndIndex, targetPosition);
   }
 
   @action
@@ -219,6 +274,5 @@ export class EntityLabelStore {
   @action
   unstash() {
     this._sequence = this.sequenceStash;
-    this.sequenceStash = [];
   }
 }

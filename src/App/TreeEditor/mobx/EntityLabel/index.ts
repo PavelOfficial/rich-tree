@@ -86,7 +86,13 @@ export class EntityLabel implements EntityLabelNode {
     this._parent = parent;
   }
 
-  addChild(child: EntityLabelNode) {
+  addChild(child: EntityLabelNode, index = -1) {
+    if (index !== -1) {
+      this._children.splice(index, 0, child);
+
+      return;
+    }
+
     this._children.push(child);
   }
 

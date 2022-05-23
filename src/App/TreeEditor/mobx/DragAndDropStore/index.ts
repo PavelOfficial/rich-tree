@@ -132,17 +132,25 @@ export class DragAndDropStore {
 
   @action
   drop(sourceIndex: number) {
+    const isAbleDrop = this.isAbleDrop; // strictly before unstash and dragging cancel
+
     this.dragging = false;
-
-    if (this.dropIntention.index !== -1 && this.isAbleDrop) {
-      console.log('succeed !!!');
-
-      this.entityLabelStore.moveNode(sourceIndex, this.dropIntention);
-    } else {
-      console.log('failed !!!');
-    }
-
     this.entityLabelStore.unstash();
+
+    if (this.dropIntention.index !== -1 && isAbleDrop) {
+      const targetPosition = {
+        //
+        parentId: this.dropIntention.parentId,
+        index: this.dropIntention.index,
+      };
+
+      if (sourceIndex < targetPosition.index) {
+        const sourceItemNotDisplayedCorrection = 1;
+        targetPosition.index = targetPosition.index + sourceItemNotDisplayedCorrection;
+      }
+
+      this.entityLabelStore.moveNode(sourceIndex, targetPosition);
+    }
   }
 
   @computed

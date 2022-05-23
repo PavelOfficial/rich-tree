@@ -10,7 +10,7 @@ export interface EntityLabelNode {
   get label(): string;
   get children(): EntityLabelNode[];
   setParent(parent: EntityLabelNode): void;
-  addChild(child: EntityLabelNode): void;
+  addChild(child: EntityLabelNode, index?: number): void;
   get level(): number;
   getBranchMembers(): EntityLabelNode[];
   removeChild(node: EntityLabelNode): void;
