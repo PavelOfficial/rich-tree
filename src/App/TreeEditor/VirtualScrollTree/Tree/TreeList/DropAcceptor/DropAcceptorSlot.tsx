@@ -5,44 +5,52 @@ import { nestingPad } from '../../definitions';
 
 type Props = {
   id: number;
-  index: number;
+  nestingLevel: number;
+  base: boolean;
   onDragOver: (pathId: number) => void;
 };
 
-export const DropAcceptorSlot = ({ index, onDragOver, id }: Props) => {
+export const DropAcceptorSlot = ({ nestingLevel, onDragOver, id, base }: Props) => {
   const [active, setActive] = useState(false);
   const ref = useRef(null);
   const style = useMemo(() => {
     return {
-      marginLeft: index * nestingPad,
+      marginLeft: nestingLevel * nestingPad,
     };
-  }, [index]);
+  }, [nestingLevel]);
 
-  const handleDragOver: DragEventHandler<HTMLDivElement> = (event) => {
+  const handleDragOver: DragEventHandler<HTMLDivElement> = () => {
     onDragOver(id);
-
-    if (event.target === ref.current) {
-      setActive(true);
-    }
+    setActive(true);
   };
 
-  const handleDragLeave: DragEventHandler<HTMLDivElement> = (event) => {
-    if (event.target === ref.current) {
-      setActive(false);
-    }
+  const handleDragLeave: DragEventHandler<HTMLDivElement> = () => {
+    setActive(false);
   };
 
-  return (
-    //
-    <div
-      ref={ref}
-      style={style}
-      className={classnames({
-        DropAcceptor__slot: true,
-        DropAcceptor__slot_active: active,
-      })}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-    />
-  );
+  const renderContent = () => {
+    return (
+      //
+      <div
+        ref={!base ? ref : undefined}
+        style={style}
+        className={classnames({
+          DropAcceptor__slot: true,
+          DropAcceptor__slot_active: active,
+        })}
+        onDragOver={!base ? handleDragOver : undefined}
+        onDragLeave={!base ? handleDragLeave : undefined}
+      />
+    );
+  };
+
+  if (base) {
+    return (
+      <div ref={ref} onDragOver={handleDragOver} onDragLeave={handleDragLeave}>
+        {renderContent()}
+      </div>
+    );
+  }
+
+  return renderContent();
 };

@@ -5,7 +5,6 @@ import { EntityLabelStore } from '../../../../mobx/EntityLabelStore';
 import { DragAndDropStore } from '../../../../mobx/DragAndDropStore';
 
 import './index.css';
-import { emptyEntityLabelNode } from '../../../../mobx/EntityLabel/emptyEntityLabelNode';
 import { DropAcceptorSlot } from './DropAcceptorSlot';
 import { ROOT_ID } from '../../../../mobx/EntityLabelStore/definitions';
 
@@ -15,12 +14,16 @@ type Props = {
 };
 
 const renderSlots = (pathIds: number[], onDragOver: (pathId: number) => void) => {
-  return pathIds.map((id, index) => {
+  const childAndSiblingIds = pathIds.slice(-2);
+  const nestingStartLevel = Math.max(pathIds.length - 2, 0);
+
+  return childAndSiblingIds.map((id, index) => {
     return (
       <DropAcceptorSlot //
         key={id}
         id={id}
-        index={index}
+        base={index === 0}
+        nestingLevel={nestingStartLevel + index}
         onDragOver={onDragOver}
       />
     );
