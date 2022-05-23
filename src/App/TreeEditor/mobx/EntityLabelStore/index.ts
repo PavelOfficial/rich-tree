@@ -71,15 +71,28 @@ export class EntityLabelStore {
 
     const targetParent = this._map.get(targetPosition.parentId);
 
-    const upperId = sequence[targetPosition.index - 1] ?? ROOT_ID;
-    const upperNode = this._map.get(upperId);
-    const upperNodePath = upperNode.path;
-    const upperNodeParentIndex = upperNodePath.indexOf(targetPosition.parentId);
-    const lastItemId = sequence[sequence.length - 1];
-    const closestUpperSiblingId = upperNodeParentIndex === -1 ? lastItemId : upperNodePath[upperNodeParentIndex + 1] ?? lastItemId;
-    const closestUpperSibling = this._map.get(closestUpperSiblingId);
-    const closestUpperSiblingIndex = targetParent.children.indexOf(closestUpperSibling);
-    const insertIndex = closestUpperSiblingIndex + 1;
+    let childItem = null;
+    let currentItem = null;
+    for (let i = targetPosition.index - 1; targetParent !== currentItem && i >= 0; i--) {
+      currentItem = this._map.get(sequence[i]);
+
+      if (targetParent === currentItem) {
+        break;
+      }
+
+      if (currentItem.parent === targetParent) {
+        childItem = currentItem;
+        break;
+      }
+    }
+
+    let insertIndex: number;
+    if (childItem) {
+      const closestUpperSiblingIndex = targetParent.children.indexOf(childItem);
+      insertIndex = closestUpperSiblingIndex + 1;
+    } else {
+      insertIndex = 0;
+    }
 
     sourceNode.parent.removeChild(sourceNode);
 

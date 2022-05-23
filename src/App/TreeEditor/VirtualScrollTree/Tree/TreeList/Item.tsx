@@ -30,7 +30,7 @@ const Item = inject(
   observer((props: ItemProps) => {
     const [{ isDragging }, drag] = useDrag<{ id: number }, { name: string }, { isDragging: boolean }>(() => ({
       type: nodeItemType,
-      item: { id: props.id, index: props.index },
+      item: { id: props.id },
       end: () => {
         props.dragAndDropStore.endDragging();
       },

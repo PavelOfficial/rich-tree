@@ -14,7 +14,6 @@ type Props = {
 
 type DropItem = {
   id: number;
-  index: number;
 };
 
 const DropContainer = inject('dragAndDropStore')(({ style, children, dragAndDropStore }: Props) => {
@@ -22,7 +21,7 @@ const DropContainer = inject('dragAndDropStore')(({ style, children, dragAndDrop
   const [_, drop] = useDrop(() => ({
     accept: nodeItemType,
     drop: (item: DropItem) => {
-      dragAndDropStore.drop(item.index);
+      dragAndDropStore.drop(item.id);
     },
   }));
 

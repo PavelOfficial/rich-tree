@@ -131,13 +131,14 @@ export class DragAndDropStore {
   }
 
   @action
-  drop(sourceIndex: number) {
+  drop(id: number) {
+    const sourceIndex = this.entityLabelStore.sequenceStash.indexOf(id);
     const isAbleDrop = this.isAbleDrop; // strictly before unstash and dragging cancel
 
     this.dragging = false;
     this.entityLabelStore.unstash();
 
-    if (this.dropIntention.index !== -1 && isAbleDrop) {
+    if (this.dropIntention.index !== -1 && isAbleDrop && sourceIndex !== -1) {
       const targetPosition = {
         //
         parentId: this.dropIntention.parentId,

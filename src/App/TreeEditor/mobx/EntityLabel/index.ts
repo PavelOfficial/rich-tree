@@ -108,6 +108,6 @@ export class EntityLabel implements EntityLabelNode {
     const length = this.parent.children.length;
     const last = this.parent.children[length - 1];
 
-    return last.id === this.id;
+    return length > 0 ? last.id === this.id : false;
   }
 }
