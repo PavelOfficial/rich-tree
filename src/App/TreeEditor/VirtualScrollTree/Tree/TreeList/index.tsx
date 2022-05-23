@@ -77,7 +77,7 @@ const renderList = (props: Props, options: DraggingOptions) => {
     }
 
     if (typeof id === 'number') {
-      return <Item key={id} id={id} index={props.range.from + index} node={props.map.get(id) as EntityLabelNode} />;
+      return <Item key={id} id={id} index={props.range.from + index} />;
     }
 
     exhaustivenessCheck(id);
