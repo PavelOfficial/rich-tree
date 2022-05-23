@@ -12,6 +12,8 @@ import { NodeLocation } from '../DragAndDropStore/types';
 const RESOURCE = 'https://gist.githubusercontent.com/avydashenko/e1702c1ef26cddd006da989aa47d4f62/raw/067f7b75946baf7faf5b8afcd04c66ecf0b47486/view.json';
 
 export class EntityLabelStore {
+  sequenceStash: number[];
+
   @observable
   _selected: EntityLabelNode;
 
@@ -37,6 +39,7 @@ export class EntityLabelStore {
     this._map = this.createMap();
     this._selected = emptyEntityLabelNode;
     this._pending = false;
+    this.sequenceStash = [];
 
     this.fetch();
   }
@@ -205,5 +208,17 @@ export class EntityLabelStore {
   @computed
   get pending() {
     return this._pending;
+  }
+
+  @action
+  removeSequenceItemAndStash(index) {
+    this.sequenceStash = [...this._sequence];
+    this._sequence.splice(index, 1);
+  }
+
+  @action
+  unstash() {
+    this._sequence = this.sequenceStash;
+    this.sequenceStash = [];
   }
 }

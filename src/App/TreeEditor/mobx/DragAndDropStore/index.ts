@@ -22,22 +22,22 @@ export class DragAndDropStore {
   dropIntention: NodeLocation;
 
   @observable
-  startDraggingIndex: number;
+  _startDraggingIndex: number;
 
   constructor(entityLabelStore: EntityLabelStore) {
     this.entityLabelStore = entityLabelStore;
     this.dropIntention = emptyDropIntention;
-    this.startDraggingIndex = -1;
+    this._startDraggingIndex = -1;
   }
 
   @computed
   get dropAccessorIndex() {
-    return this.dragging ? this._mouseIndex + this.afterStartIndexBoost : -1;
+    return this.dragging ? this._mouseIndex : -1;
   }
 
   @computed
-  get afterStartIndexBoost() {
-    return this._mouseIndex > this.startDraggingIndex ? 1 : 0;
+  get startDraggingIndex() {
+    return this.dragging ? this._startDraggingIndex : -1;
   }
 
   @action
@@ -52,17 +52,24 @@ export class DragAndDropStore {
 
   @action
   startDragging(index: number) {
-    this.startDraggingIndex = index;
+    this._startDraggingIndex = index;
+    this.entityLabelStore.removeSequenceItemAndStash(index);
+
     this.dragging = true;
   }
 
   @action
   endDragging() {
-    this.dragging = false;
+    if (this.dragging) {
+      this.entityLabelStore.unstash();
+      this.dragging = false;
+    }
   }
 
   @action
   drop(sourceIndex: number) {
+    this.entityLabelStore.unstash();
+
     if (this.dropIntention.index !== -1) {
       this.entityLabelStore.moveNode(sourceIndex, this.dropIntention);
     }

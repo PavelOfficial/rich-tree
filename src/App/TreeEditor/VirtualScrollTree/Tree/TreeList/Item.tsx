@@ -56,10 +56,6 @@ const Item = inject(
       props.entityLabelStore.setSelected(props.id);
     }, [props.id]);
 
-    if (isDragging) {
-      return <div className="DragStart" />;
-    }
-
     return (
       <div className="NodeBox" style={style} key={props.id}>
         <button

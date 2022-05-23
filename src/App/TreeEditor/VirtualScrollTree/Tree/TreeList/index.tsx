@@ -10,6 +10,7 @@ import { DropAcceptor } from './DropAcceptor';
 
 import './index.css';
 import { exhaustivenessCheck } from '../../../../../utils';
+import { StartDrag } from './DragStart';
 
 type Props = {
   sequence: number[];
@@ -24,30 +25,55 @@ type DraggingOptions = {
 };
 
 type DropAccessorSign = 'DROP_ACCESSOR_SIGN';
+type StartDraggingSign = 'START_DRAGGING_SIGN';
 const DROP_ACCESSOR_SIGN: DropAccessorSign = 'DROP_ACCESSOR_SIGN';
-type SequenceItem = DropAccessorSign | number;
+const START_DRAGGING_SIGN: StartDraggingSign = 'START_DRAGGING_SIGN';
+type SequenceItem = DropAccessorSign | StartDraggingSign | number;
 
-const mixinDropAccessor = (sequence: number[], range: VirtualScrollRange, dropAccessorIndex: number) => {
-  const outOfRange = dropAccessorIndex < range.from || dropAccessorIndex > range.to;
-
-  if (dropAccessorIndex === -1 || outOfRange) {
+const mixinItemToSequence = (sequence: SequenceItem[], index: number, item: SequenceItem) => {
+  if (index === -1) {
     return sequence;
   }
 
-  const index = dropAccessorIndex - range.from;
   const resultSequence: SequenceItem[] = [...sequence];
-  resultSequence.splice(index, 0, DROP_ACCESSOR_SIGN);
+  resultSequence.splice(index, 0, item);
 
   return resultSequence;
 };
 
-const renderList = (props: Props, dropAccessorIndex: number) => {
+const getInsertionIndex = (index: number, range: VirtualScrollRange) => {
+  const outOfRange = index < range.from || index > range.to;
+
+  if (index === -1 || outOfRange) {
+    return -1;
+  }
+
+  return index - range.from;
+};
+
+const mixinSpecialItems = (sequence: number[], range: VirtualScrollRange, { dropAccessorIndex, startDraggingIndex }: DraggingOptions) => {
+  const dropAccessorInsertionIndex = getInsertionIndex(dropAccessorIndex, range);
+  const startDraggingInsertionIndex = getInsertionIndex(startDraggingIndex, range);
+
+  let newSequence: SequenceItem[] = sequence;
+
+  newSequence = mixinItemToSequence(newSequence, dropAccessorInsertionIndex, DROP_ACCESSOR_SIGN);
+  newSequence = mixinItemToSequence(newSequence, startDraggingInsertionIndex, START_DRAGGING_SIGN);
+
+  return newSequence;
+};
+
+const renderList = (props: Props, options: DraggingOptions) => {
   const virtualSequence = props.sequence.slice(props.range.from, props.range.to);
-  const sequence = mixinDropAccessor(virtualSequence, props.range, dropAccessorIndex);
+  const sequence = mixinSpecialItems(virtualSequence, props.range, options);
 
   return sequence.map((id: SequenceItem, index) => {
     if (id === DROP_ACCESSOR_SIGN) {
       return <DropAcceptor />;
+    }
+
+    if (id === START_DRAGGING_SIGN) {
+      return <StartDrag />;
     }
 
     if (typeof id === 'number') {
@@ -62,7 +88,12 @@ const renderList = (props: Props, dropAccessorIndex: number) => {
 
 const TreeList = inject('dragAndDropStore')(
   observer((props: Props) => {
-    return <>{renderList(props, props.dragAndDropStore.dropAccessorIndex)}</>;
+    const options: DraggingOptions = {
+      startDraggingIndex: props.dragAndDropStore.startDraggingIndex,
+      dropAccessorIndex: props.dragAndDropStore.dropAccessorIndex,
+    };
+
+    return <>{renderList(props, options)}</>;
   })
 );
 
