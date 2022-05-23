@@ -2,6 +2,7 @@ import { action, computed, observable } from 'mobx';
 
 import { EntityLabelStore } from '../EntityLabelStore';
 import { NodeLocation } from './types';
+import { ROOT_ID } from '../EntityLabelStore/definitions';
 
 const emptyDropIntention: NodeLocation = {
   index: -1,
@@ -40,6 +41,20 @@ export class DragAndDropStore {
     return this.dragging ? this._startDraggingIndex : -1;
   }
 
+  @computed
+  get isAbleDrop() {
+    if (this.dropAccessorIndex !== -1 && this._startDraggingIndex !== -1) {
+      const startId = this.entityLabelStore.sequenceStash[this._startDraggingIndex];
+      const endId = this.entityLabelStore._sequence[this.dropAccessorIndex - 1] ?? ROOT_ID;
+      const endItem = this.entityLabelStore.map.get(endId);
+      const endItemParents = new Set(endItem.path);
+
+      return !endItemParents.has(startId);
+    }
+
+    return false;
+  }
+
   @action
   setDropIntention(dropIntention: NodeLocation) {
     this.dropIntention = dropIntention;
@@ -68,13 +83,17 @@ export class DragAndDropStore {
 
   @action
   drop(sourceIndex: number) {
-    this.entityLabelStore.unstash();
+    this.dragging = false;
 
-    if (this.dropIntention.index !== -1) {
+    if (this.dropIntention.index !== -1 && this.isAbleDrop) {
+      console.log('succeed !!!');
+
       this.entityLabelStore.moveNode(sourceIndex, this.dropIntention);
+    } else {
+      console.log('failed !!!');
     }
 
-    this.dragging = false;
+    this.entityLabelStore.unstash();
   }
 
   @computed

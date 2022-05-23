@@ -5,6 +5,10 @@
   background: #fadf7a;
 }
 
+.DropAcceptor_invalid {
+  background: #de2a2a;
+}
+
 .DropAcceptor__slot {
   box-sizing: border-box;
   height: 40px;

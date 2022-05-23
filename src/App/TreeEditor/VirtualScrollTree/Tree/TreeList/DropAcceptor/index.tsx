@@ -1,5 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import classnames from 'classnames';
 
 import { EntityLabelStore } from '../../../../mobx/EntityLabelStore';
 import { DragAndDropStore } from '../../../../mobx/DragAndDropStore';
@@ -35,7 +36,7 @@ const DropAcceptor = inject(
   'dragAndDropStore'
 )(
   observer(({ entityLabelStore, dragAndDropStore }: Props) => {
-    const { dropAccessorIndex, startDraggingIndex } = dragAndDropStore;
+    const { dropAccessorIndex, isAbleDrop } = dragAndDropStore;
     const handleDragOver = (pathId: number) => {
       dragAndDropStore.setDropIntention({
         parentId: pathId,
@@ -46,10 +47,23 @@ const DropAcceptor = inject(
     const id = entityLabelStore._sequence[dropAccessorIndex - 1];
     const node = entityLabelStore.map.get(id) ?? entityLabelStore.map.get(ROOT_ID);
 
+    const renderSlotsIfAble = () => {
+      if (!isAbleDrop) {
+        return null;
+      }
+
+      return renderSlots(node.path, handleDragOver);
+    };
+
     return (
       <div>
-        <div className="DropAcceptor" />
-        {renderSlots(node.path, handleDragOver)}
+        <div
+          className={classnames({
+            DropAcceptor: true,
+            DropAcceptor_invalid: !isAbleDrop,
+          })}
+        />
+        {renderSlotsIfAble()}
       </div>
     );
   })
