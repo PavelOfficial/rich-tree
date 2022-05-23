@@ -46,10 +46,13 @@ export class DragAndDropStore {
 
   @computed
   get onlyChildDropAllowed() {
-    const upperItemId = this.entityLabelStore._sequence[this.dropAccessorIndex - 1] ?? ROOT_ID;
+    const draggingItemId = this.entityLabelStore.sequenceStash[this.dropAccessorIndex] ?? ROOT_ID;
+    const upperItemId = this.entityLabelStore.sequenceStash[this.dropAccessorIndex - 1] ?? ROOT_ID;
     const upperItem = this.entityLabelStore.map.get(upperItemId);
+    const draggingItem = this.entityLabelStore.map.get(draggingItemId);
+    const onlyOneDraggingChild = draggingItem.parent.id === upperItem.id && upperItem.children.length === 1;
 
-    return !!upperItem.children.length;
+    return !!upperItem.children.length && !onlyOneDraggingChild;
   }
 
   @computed

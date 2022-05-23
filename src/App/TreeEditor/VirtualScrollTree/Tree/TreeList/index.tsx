@@ -69,11 +69,11 @@ const renderList = (props: Props, options: DraggingOptions) => {
 
   return sequence.map((id: SequenceItem, index) => {
     if (id === DROP_ACCESSOR_SIGN) {
-      return <DropAcceptor />;
+      return <DropAcceptor key={DROP_ACCESSOR_SIGN} />;
     }
 
     if (id === START_DRAGGING_SIGN) {
-      return <StartDrag />;
+      return <StartDrag key={START_DRAGGING_SIGN} />;
     }
 
     if (typeof id === 'number') {
