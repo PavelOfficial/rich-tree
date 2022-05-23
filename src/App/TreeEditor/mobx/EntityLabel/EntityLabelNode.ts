@@ -16,4 +16,5 @@ export interface EntityLabelNode {
   removeChild(node: EntityLabelNode): void;
   getData(): EntityLabelData;
   get path(): number[];
+  get isLastChild(): boolean;
 }

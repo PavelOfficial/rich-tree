@@ -3,11 +3,14 @@ import { action, computed, observable } from 'mobx';
 import { EntityLabelStore } from '../EntityLabelStore';
 import { NodeLocation } from './types';
 import { ROOT_ID } from '../EntityLabelStore/definitions';
+import { emptyEntityLabelNode } from '../EntityLabel/emptyEntityLabelNode';
 
 const emptyDropIntention: NodeLocation = {
   index: -1,
   parentId: -1,
 };
+
+const DEFAULT_AVAILABLE_DROP_INDEX = -2;
 
 export class DragAndDropStore {
   @observable
@@ -39,6 +42,52 @@ export class DragAndDropStore {
   @computed
   get startDraggingIndex() {
     return this.dragging ? this._startDraggingIndex : -1;
+  }
+
+  @computed
+  get onlyChildDropAllowed() {
+    const upperItemId = this.entityLabelStore._sequence[this.dropAccessorIndex - 1] ?? ROOT_ID;
+    const upperItem = this.entityLabelStore.map.get(upperItemId);
+
+    return !!upperItem.children.length;
+  }
+
+  @computed
+  get dropIndexByUpperItemLastChild() {
+    const upperItemId = this.entityLabelStore._sequence[this.dropAccessorIndex - 1] ?? ROOT_ID;
+
+    if (upperItemId === ROOT_ID) {
+      return -1;
+    }
+
+    const currentId = this.entityLabelStore.sequenceStash[this.dropAccessorIndex] ?? ROOT_ID;
+    const currentItem = this.entityLabelStore.map.get(currentId) ?? emptyEntityLabelNode;
+
+    const upperItem = this.entityLabelStore.map.get(upperItemId) ?? emptyEntityLabelNode;
+    const path = upperItem.path.reverse();
+    let result = DEFAULT_AVAILABLE_DROP_INDEX;
+
+    for (let i = 0; i < path.length; i++) {
+      const item = this.entityLabelStore.map.get(path[i]);
+      const isLastItemCurrent = i === 0 && currentItem.isLastChild && item.parent.id === currentItem.parent.id;
+
+      if (item.isLastChild || isLastItemCurrent) {
+        result = result - 1;
+      } else {
+        break;
+      }
+    }
+
+    return result;
+  }
+
+  @computed
+  get availableDropItemIndex() {
+    if (this.onlyChildDropAllowed) {
+      return -1;
+    }
+
+    return this.dropIndexByUpperItemLastChild;
   }
 
   @computed

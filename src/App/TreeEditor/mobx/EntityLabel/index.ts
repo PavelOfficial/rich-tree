@@ -21,7 +21,7 @@ export class EntityLabel implements EntityLabelNode {
   @observable _parent: EntityLabelNode;
 
   /**
-   * warning: it's unordered
+   * keep actual children order
    */
   @observable _children: EntityLabelNode[];
 
@@ -96,5 +96,12 @@ export class EntityLabel implements EntityLabelNode {
       label: this.label,
       parentId: this.parent.id,
     };
+  }
+
+  get isLastChild() {
+    const length = this.parent.children.length;
+    const last = this.parent.children[length - 1];
+
+    return last.id === this.id;
   }
 }

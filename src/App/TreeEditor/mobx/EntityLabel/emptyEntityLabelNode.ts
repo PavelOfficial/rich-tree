@@ -30,4 +30,7 @@ export const emptyEntityLabelNode: EntityLabelNode = {
   get path() {
     return [];
   },
+  get isLastChild() {
+    return false;
+  },
 };
