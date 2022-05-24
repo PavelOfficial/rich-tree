@@ -85,23 +85,56 @@ export class DragAndDropStore {
   }
 
   @computed
-  get availableDropItemIndex() {
+  get availableDropRange(): [number, number] {
     if (this.onlyChildDropAllowed) {
-      return -1;
+      return [-1, Infinity];
     }
 
-    return this.dropIndexByUpperItemLastChild;
+    if (this.isItLastAgeOfSelfBranch) {
+      const startId = this.entityLabelStore.sequenceStash[this._startDraggingIndex];
+      const startItem = this.entityLabelStore.map.get(startId);
+      // startItem.level;
+
+      return [startItem.level, startItem.level + 1];
+    }
+
+    return [this.dropIndexByUpperItemLastChild, Infinity];
+  }
+
+  @computed
+  get isItEndPathHasStart() {
+    const startId = this.entityLabelStore.sequenceStash[this._startDraggingIndex];
+    const endId = this.entityLabelStore._sequence[this.dropAccessorIndex - 1] ?? ROOT_ID;
+    const endItem = this.entityLabelStore.map.get(endId);
+    const endItemParents = new Set(endItem.path);
+    const endPathHasStart = endItemParents.has(startId);
+
+    return endPathHasStart;
+  }
+
+  @computed
+  get isItLastAgeOfSelfBranch() {
+    const startId = this.entityLabelStore.sequenceStash[this._startDraggingIndex];
+    const endId = this.entityLabelStore._sequence[this.dropAccessorIndex - 1] ?? ROOT_ID;
+    const endItem = this.entityLabelStore.map.get(endId);
+    const path = endItem.path;
+    const indexOfStart = path.indexOf(startId);
+    const branchPath = path.slice(indexOfStart + 1);
+    const isEveryLastChild = branchPath.every((itemId) => {
+      return this.entityLabelStore.map.get(itemId).isLastChild;
+    });
+
+    return isEveryLastChild && !endItem.children.length;
   }
 
   @computed
   get isAbleDrop() {
     if (this.dropAccessorIndex !== -1 && this._startDraggingIndex !== -1) {
-      const startId = this.entityLabelStore.sequenceStash[this._startDraggingIndex];
-      const endId = this.entityLabelStore._sequence[this.dropAccessorIndex - 1] ?? ROOT_ID;
-      const endItem = this.entityLabelStore.map.get(endId);
-      const endItemParents = new Set(endItem.path);
+      if (this.isItEndPathHasStart) {
+        return this.isItLastAgeOfSelfBranch;
+      }
 
-      return !endItemParents.has(startId);
+      return true;
     }
 
     return false;

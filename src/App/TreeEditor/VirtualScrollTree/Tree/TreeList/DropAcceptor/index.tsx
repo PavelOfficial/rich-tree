@@ -14,9 +14,9 @@ type Props = {
   dragAndDropStore: DragAndDropStore;
 };
 
-const renderSlots = (pathIds: number[], availableDropItemIndex: number, onDragOver: (pathId: number) => void) => {
-  const childAndSiblingIds = pathIds.slice(availableDropItemIndex);
-  const nestingStartLevel = Math.max(pathIds.length + availableDropItemIndex, 0);
+const renderSlots = (pathIds: number[], availableDropRange: [number, number], onDragOver: (pathId: number) => void) => {
+  const childAndSiblingIds = pathIds.slice(availableDropRange[0], availableDropRange[1]);
+  const nestingStartLevel = availableDropRange[0] < 0 ? Math.max(pathIds.length + availableDropRange[0], 0) : availableDropRange[0];
 
   return childAndSiblingIds.map((id, index) => {
     return (
@@ -52,7 +52,7 @@ const DropAcceptor = inject(
         return null;
       }
 
-      return renderSlots(node.path, dragAndDropStore.availableDropItemIndex, handleDragOver);
+      return renderSlots(node.path, dragAndDropStore.availableDropRange, handleDragOver);
     };
 
     return (
